@@ -7,7 +7,13 @@ import com.dongdong.yx.model.acl.Role;
 import com.dongdong.yx.vo.acl.RoleQueryVo;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 public interface RoleService extends IService<Role> {
     IPage<Role> selectPage(Page<Role> pageParam, RoleQueryVo roleQueryVo);
 
+    boolean saveUserRoleRelationShip(Long adminId, Long[] roleIds);
+
+
+    Map<String, Object> findRoleByUserId(Long adminId);
 }

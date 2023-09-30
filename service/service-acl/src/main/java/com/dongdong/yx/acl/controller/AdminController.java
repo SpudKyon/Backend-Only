@@ -3,9 +3,12 @@ package com.dongdong.yx.acl.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dongdong.common.utils.MD5;
+import com.dongdong.yx.acl.service.AdminRoleService;
 import com.dongdong.yx.acl.service.AdminService;
+import com.dongdong.yx.acl.service.RoleService;
 import com.dongdong.yx.common.result.Result;
 import com.dongdong.yx.model.acl.Admin;
+import com.dongdong.yx.model.acl.Role;
 import com.dongdong.yx.vo.acl.AdminQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/acl/user")
@@ -23,6 +27,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private RoleService roleService;
 
     @ApiOperation(value = "获取管理员列表")
     @GetMapping("{page}/{limit}")
@@ -36,12 +43,11 @@ public class AdminController {
             @ApiParam(name = "userQueryVo", value = "查询对象", required = true)
             AdminQueryVo userQueryVo
     ) {
-        Page<Admin> adminPage = new Page<>(page, limit);
-        IPage<Admin> selected = adminService.selectPage(adminPage, userQueryVo);
+        IPage<Admin> selected = adminService.selectPage(new Page<Admin>(page, limit), userQueryVo);
         return Result.success(selected);
     }
 
-    @ApiOperation(value = "获取管理员")
+    @ApiOperation(value = "使用ID获取管理员")
     @GetMapping("get/{id}")
     public Result<Admin> get(@PathVariable Long id) {
         Admin admin = adminService.getById(id);
@@ -75,5 +81,19 @@ public class AdminController {
     public Result<String> batchRemove(@RequestBody List<Long> idList) {
         boolean removed = adminService.removeByIds(idList);
         return removed ? Result.success(null) : Result.fail(null);
+    }
+
+    @ApiOperation(value = "根据用户获得角色信息")
+    @GetMapping("assign/{id}")
+    public Result<Map<String, Object>> assign(@PathVariable Long id) {
+        Map<String, Object> roleMap = roleService.findRoleByUserId(id);
+        return Result.success(roleMap);
+    }
+
+    @ApiOperation(value = "根据角色分配角色")
+    @PostMapping("do/assign")
+    public Result<String> doAssign(@RequestParam Long adminId, @RequestParam Long[] roleId) {
+        boolean saved = roleService.saveUserRoleRelationShip(adminId, roleId);
+        return saved ? Result.success(null) : Result.fail(null);
     }
 }
