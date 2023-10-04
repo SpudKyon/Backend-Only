@@ -22,9 +22,5 @@ spring:
       discovery:
         server-addr: localhost:8848
 
-aliyun:
-  endpoint: oss-cn-shanghai.aliyuncs.com
-  keyid: LTAI5t8rcz5ycvnScFYpP9oZ
-  keysecret: aSF9Kl1B8PeBe65HMEpeL4i818H3QT
-  bucketname: yx-d
+
 
