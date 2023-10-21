@@ -74,12 +74,14 @@ public class SkuInfoController {
         return removed ? Result.success(null) : Result.fail(null);
     }
 
+    @ApiOperation(value = "商品审核")
     @GetMapping("check/{skuId}/{status}")
     public Result<String> check(@PathVariable("skuId") Long skuId, @PathVariable("status") Integer status) {
         boolean checked = skuInfoService.check(skuId, status);
         return checked ? Result.success(null) : Result.fail(null);
     }
 
+    @ApiOperation(value = "商品上下架")
     @GetMapping("publish/{skuId}/{status}")
     public Result<String> publish(@PathVariable("skuId") Long skuId,
                                   @PathVariable("status") Integer status) {
